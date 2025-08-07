@@ -16,16 +16,16 @@ dictionary() {
         fi
 }
 
-# find out how many pages are needed to get all plugins
+ find out how many pages are needed to get all plugins
 paginate() {
-       # fetch total no. of plugins
-       numberPlugins=$(curl -sS --request GET \
+        # fetch total no. of plugins
+        numberPlugins=$(curl -sS --request GET \
      --url https://cloud.tenable.com/plugins/plugin?size=10000 \
      --header "X-ApiKeys: accessKey=$TENABLE_ACCESS_KEY; secretKey=$TENABLE_SECRET_KEY;" \
      --header "accept: application/json" | jq '.total_count')
         # find number of pages needed by ceil
-       pages=$(( ($numberPlugins+9999)/10000 ))
-       echo $pages
+        pages=$(( ($numberPlugins+9999)/10000 ))
+        echo $pages
 }
 
 # get plugins, 10k at a time, all pages, & sort output into dict
@@ -40,11 +40,6 @@ getPlugins() {
             jq '[.data.plugin_details[] | {id, cve: .attributes.cve}]' >> pluginsList.txt
     done
     echo "[*] Plugin dictionary created. Run: head -n 20 ./pluginsList.txt to check it."
-#curl -sS --request GET \
-#            --url "https://cloud.tenable.com/plugins/plugin?size=10000&page=${i}" \
-#            --header "X-ApiKeys: accessKey=${TENABLE_ACCESS_KEY}; secretKey=${TENABLE_SECRET_KEY}" \
-#            --header "accept: application/json" | \
-#            jq '[.vulnerabilities[] | {plugin_id, vpr: vpr_score}]' >> pluginsList.txt
 }
 
 #  process single entry
